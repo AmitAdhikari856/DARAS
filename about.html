@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>About | Digital Addiction Risk Assessment System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white border-b shadow-sm">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Title -->
+                <div class="flex flex-col leading-tight">
+                    <a href="/" class="text-lg font-semibold text-gray-900">
+                        Digital Addiction Risk Assessment System
+                    </a>
+                    <span class="text-xs text-gray-500">
+                        Kageshwori–Manohara Municipality
+                    </span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
+                    <a href="#model" class="hover:text-blue-600">Model</a>
+                    <a href="#usage" class="hover:text-blue-600">Digital Usage Behaviours</a>
+                    <a href="#risk" class="hover:text-blue-600">Risk Category</a>
+                    <a href="#metrics" class="hover:text-blue-600">Metrics</a>
+                    <a href="#about" class="text-blue-600 font-semibold">About This Project</a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="menu-btn" class="md:hidden text-gray-700">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="hidden md:hidden border-t">
+                <nav class="py-4 space-y-3 text-sm text-gray-700">
+                    <a href="#model" class="block">Model</a>
+                    <a href="#usage" class="block">Digital Usage Behaviours</a>
+                    <a href="#risk" class="block">Risk Category</a>
+                    <a href="#metrics" class="block">Metrics</a>
+                    <a href="#about" class="block font-semibold text-blue-600">About This Project</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="about" class="max-w-5xl mx-auto px-6 py-10 space-y-10">
+
+        <!-- Page Header -->
+        <section class="border-b pb-6">
+            <h1 class="text-3xl font-bold text-gray-900">
+                Digital Addiction Risk Assessment System
+            </h1>
+            <p class="mt-2 text-lg text-gray-600">
+                For Kageshwori–Manohara Municipality
+            </p>
+        </section>
+
+        <!-- Business Problem -->
+        <section class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-3">Business Problem</h2>
+            <p class="leading-relaxed text-gray-700">
+                Kageshwori–Manohara Municipality currently lacks a scientific, data-driven model
+                to assess the level of digital addiction risk among students and young individuals.
+                Without a validated predictive model, it is difficult to quantify risk levels,
+                identify vulnerable groups, and support evidence-based awareness or policy planning
+                related to digital well-being.
+            </p>
+        </section>
+
+        <!-- Project Objectives -->
+        <section class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">Project Objectives</h2>
+            <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Develop a machine learning–based digital addiction risk prediction model.</li>
+                <li>Analyze the relationship between digital usage behaviors and addiction risk.</li>
+                <li>Classify individuals into risk categories (Low / Moderate / High).</li>
+                <li>Evaluate and validate model performance using appropriate metrics.</li>
+                <li>Produce a research-ready and policy-supporting analytical output for the municipality.</li>
+            </ul>
+        </section>
+
+        <!-- In Scope -->
+        <section class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">In Scope</h2>
+            <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Definition of digital addiction–related variables and indicators.</li>
+                <li>Collection and use of survey-based, anonymized data.</li>
+                <li>Data cleaning, preprocessing, and exploratory data analysis (EDA).</li>
+                <li>Feature engineering and selection.</li>
+                <li>Training and testing multiple machine learning models.</li>
+                <li>Model comparison, validation, and performance evaluation.</li>
+                <li>Interpretation of model outputs and key influencing factors.</li>
+                <li>Technical documentation of the final selected model.</li>
+            </ul>
+        </section>
+
+        <!-- Out of Scope -->
+        <section class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">Out of Scope</h2>
+            <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Development of web, mobile, or cloud-based applications.</li>
+                <li>Dashboards, visualization portals, or user interfaces.</li>
+                <li>Real-time data collection or monitoring.</li>
+                <li>Clinical diagnosis, treatment, or counseling recommendations.</li>
+                <li>Deployment, maintenance, or operationalization of the model.</li>
+                <li>Integration with external systems or databases.</li>
+            </ul>
+        </section>
+
+        <!-- Stakeholders -->
+        <section class="bg-white rounded-xl shadow-sm p-6 space-y-4">
+            <h2 class="text-xl font-semibold">Stakeholders</h2>
+
+            <div>
+                <h3 class="font-semibold text-gray-900">Project Sponsor</h3>
+                <p class="text-gray-700">Kageshwori–Manohara Municipality</p>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-gray-900">Primary Stakeholders</h3>
+                <ul class="list-disc pl-6 text-gray-700">
+                    <li>Municipal Education and Health Units</li>
+                    <li>Policy and Planning Department</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-gray-900">Project Team</h3>
+                <ul class="list-disc pl-6 text-gray-700">
+                    <li>Team Cloud</li>
+                    <li>Academic or Domain Advisor</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-gray-900">Indirect Beneficiaries</h3>
+                <ul class="list-disc pl-6 text-gray-700">
+                    <li>Students</li>
+                    <li>Educators</li>
+                    <li>Parents</li>
+                    <li>Community Planners</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Assumptions -->
+        <section class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">Assumptions</h2>
+            <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Survey data accurately reflects participants’ digital usage behavior.</li>
+                <li>Adequate sample size is available for model development.</li>
+                <li>Ethical approval and informed consent are obtained.</li>
+                <li>Municipality supports access to educational institutions for data collection.</li>
+                <li>The model will be used for analytical and planning purposes only.</li>
+            </ul>
+        </section>
+
+        <!-- Constraints -->
+        <section class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">Constraints</h2>
+            <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Limited timeframe for data collection and model development.</li>
+                <li>Dependence on self-reported behavioral data.</li>
+                <li>Data privacy and ethical compliance requirements.</li>
+                <li>Restricted scope limited strictly to modeling and analysis.</li>
+                <li>No budget allocation for system deployment or software products.</li>
+            </ul>
+        </section>
+
+        <!-- Risks -->
+        <section class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">High-Level Risks</h2>
+            <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                <li>Data bias or inaccuracies due to self-reporting.</li>
+                <li>Insufficient or imbalanced dataset affecting model performance.</li>
+                <li>Overfitting or limited generalizability of the model.</li>
+                <li>Misinterpretation of results without proper contextual explanation.</li>
+                <li>Ethical concerns if results are used beyond intended analytical scope.</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        const btn = document.getElementById("menu-btn");
+        const menu = document.getElementById("mobile-menu");
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
+    </script>
+
+</body>
+</html>
