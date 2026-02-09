@@ -1,53 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-
-from django.contrib.admin.views.decorators import staff_member_required
-from assessment.models import DigitalAddictionAssessment
-
-from django.db.models import Avg, Count
-
-from django.shortcuts import render, redirect
-
-
-# @login_required
-# def student_dashboard(request):
-#     if not request.user.is_staff:
-#         return render(request, 'dashboards/student.html')
-#     return redirect('admin_dashboard')
-
-# @login_required
-# def use_model(request):
-#     return render(request, 'students/use_model.html')
-
-# @login_required
-# def about(request):
-#     return render(request, 'students/about.html')
-
-# @login_required
-# def admin_dashboard(request):
-#     if request.user.is_staff:
-#         return render(request, 'dashboards/admin.html')
-#     return redirect('student_dashboard')
-
-# @login_required
-# def digital_behaviour_insights(request):
-#     return render(request, 'admin/insights.html')
-
-
-# @login_required
-# def metrics(request):
-#     return render(request, 'admin/metrics.html')
-
-
-# @login_required
-# def student_history(request):
-#     pass
-#     # history = Assessment.objects.filter(user=request.user)
-#     # return render(request, 'admin/student_history.html', {'history': history})
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import DigitalAddictionAssessment
+from assessment.models import DigitalAddictionAssessment 
 
 
 # ================================
@@ -138,24 +91,24 @@ def metrics(request):
     return render(request, 'admin/metrics.html', context)
 
 
-# ================================
-# STUDENT HISTORY
-# ================================
-@login_required
-def student_history(request):
-    # Admins should not access student history page
-    if request.user.is_staff or request.user.is_superuser:
-        return redirect('admin_dashboard')
+# # ================================
+# # STUDENT HISTORY
+# # ================================
+# @login_required
+# def student_history(request):
+#     # Admins should not access student history page
+#     if request.user.is_staff or request.user.is_superuser:
+#         return redirect('admin_dashboard')
 
-    history = DigitalAddictionAssessment.objects.filter(
-        participant_name=request.user.username
-    ).order_by('-created_at')
+#     history = DigitalAddictionAssessment.objects.filter(
+#         participant_name=request.user.username
+#     ).order_by('-created_at')
 
-    return render(
-        request,
-        'students/student_history.html',
-        {'history': history}
-    )
+#     return render(
+#         request,
+#         'students/student_history.html',
+#         {'history': history}
+#     )
 
 
 

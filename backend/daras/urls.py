@@ -32,10 +32,6 @@ urlpatterns = [
 
     # CORRECT
     path('api/', include("assessment.api.urls")),
-
-
-
-
 ]
 
 

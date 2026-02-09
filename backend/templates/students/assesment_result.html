@@ -1,15 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Assessment Result</title>
-</head>
-<body>
-    <h1>Digital Addiction Assessment Result</h1>
-    <p>Participant: {{ assessment.participant_name }}</p>
-    <p>Predicted Risk: <strong>{{ assessment.predicted_risk }}</strong></p>
-    <p>Submitted At: {{ assessment.created_at }}</p>
+<h2>Assessment Result</h2>
+<div id="result-container">
+    <h3>Predicted Risk:</h3>
+    <p id="predicted-risk">Loading...</p>
 
-    <a href="{% url 'use-model' %}">Take Another Assessment</a>
-</body>
-</html>
+    <h3>Confidence:</h3>
+    <p id="risk-confidence">Loading...</p>
+
+    <h3>Your Submitted Data:</h3>
+    <ul id="submitted-data">
+        <li>Loading...</li>
+    </ul>
+</div>
+
+<script>
+async function loadResult() {
+    // Extract assessment ID from URL
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const assessmentId = pathParts[pathParts.length - 1];
+
+    try {
+        const response = await fetch(`/api/assessment/${assessmentId}/`, {
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            document.getElementById('result-container').innerHTML = '<p>Error loading result.</p>';
+            return;
+        }
+
+        // Show predicted risk
+        document.getElementById('predicted-risk').innerText = result.predicted_risk || 'N/A';
+        document.getElementById('risk-confidence').innerText = 
+            result.risk_confidence !== null 
+            ? (result.risk_confidence * 100).toFixed(1) + '%' 
+            : 'N/A';
+
+        // Show all submitted data (exclude student, predicted fields)
+        const excludeFields = ['id','student','predicted_risk','risk_confidence','created_at','updated_at'];
+        const submittedData = Object.entries(result)
+            .filter(([key, value]) => !excludeFields.includes(key))
+            .map(([key, value]) => `<li><strong>${key.replace(/_/g,' ')}:</strong> ${Array.isArray(value) ? value.join(', ') : value}</li>`)
+            .join('');
+
+        document.getElementById('submitted-data').innerHTML = submittedData;
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('result-container').innerHTML = '<p>Error loading result.</p>';
+    }
+}
+
+// Call on page load
+loadResult();
+</script>

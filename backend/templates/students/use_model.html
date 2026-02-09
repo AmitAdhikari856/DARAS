@@ -688,24 +688,58 @@
     <script>
       document
         .getElementById("behaviorForm")
-        .addEventListener("submit", async function (e) {
+        .addEventListener("submit", async (e) => {
           e.preventDefault();
 
-          const formData = Object.fromEntries(new FormData(e.target).entries());
+          const formData = new FormData(e.target);
 
-          const response = await fetch("/api/assessment/predict/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          });
+          // Build JSON object with proper values and default fallbacks
+          const data = {
+            institute: formData.get("institute") || "",
+            age: formData.get("age") || "",
+            gender: formData.get("gender") || "Male", // default to Male
+            da1: formData.get("da1") || "1",
+            da2: formData.get("da2") || "1",
+            da3: formData.get("da3") || "1",
+            da4: formData.get("da4") || "1",
+            da5: formData.get("da5") || "1",
+            da6: formData.get("da6") || "1",
+            da7: formData.get("da7") || "1",
+            da8: formData.get("da8") || "1",
+            primary_device: formData.get("primary_device") || "Smartphone",
+            own_smartphone: formData.get("own_smartphone") || "Yes",
+            mobile_data: formData.get("mobile_data") || "Always",
+            screen_weekdays: formData.get("screen_weekdays") || "<2h",
+            screen_weekends: formData.get("screen_weekends") || "<2h",
+            night_phone_use: formData.get("night_phone_use") || "Never",
+            notif_per_hour: formData.get("notif_per_hour") || "<5 times",
+            social_time: formData.get("social_time") || "<1h",
+            gaming_time: formData.get("gaming_time") || "None",
+            platforms: formData.getAll("platforms") || [],
+            self_rated_da: formData.get("self_rated_da") || "not_at_risk",
+          };
 
-          const data = await response.json();
+          try {
+            const response = await fetch("/api/assessment/predict/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+              },
+              body: JSON.stringify(data),
+            });
 
-          if (response.ok) {
-            // Redirect to result page
-            window.location.href = data.result_url;
-          } else {
-            alert("Error: " + JSON.stringify(data));
+            const result = await response.json();
+
+            if (response.ok) {
+              // Redirect to result page with assessment id
+              window.location.href = `/students/assessment_result/${result.id}/`;
+            } else {
+              alert("Error: " + JSON.stringify(result));
+            }
+          } catch (err) {
+            console.error("Fetch error:", err);
+            alert("An error occurred. Check console for details.");
           }
         });
     </script>
