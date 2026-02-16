@@ -1,38 +1,147 @@
-<h2>Assessment Result</h2>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Assessment Result | Digital Addiction Risk Assessment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<div id="resultContainer">Loading...</div>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
 
-<script>
-  const assessmentId = {{ assessment.id }};
-  const container = document.getElementById("resultContainer");
+  <body class="bg-gray-50 text-gray-800">
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white border-b shadow-sm">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="flex items-center justify-between h-16">
+          <!-- Title -->
+          <div class="flex flex-col leading-tight">
+            <a href="{% url 'student_dashboard' %}" class="text-lg font-semibold text-gray-900">
+              Digital Addiction Risk Assessment System
+            </a>
+            <span class="text-xs text-gray-500">
+              Kageshwori–Manohara Municipality
+            </span>
+          </div>
 
-  async function fetchResult() {
-    try {
-      const response = await fetch(`/api/assessment/${assessmentId}/`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+          <!-- Desktop Navigation -->
+          <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
+            <a href="{% url 'use_model' %}" class="text-blue-600 font-semibold">Use Model</a>
+            <a href="{% url 'about' %}" class="hover:text-blue-600 transition">About This Project</a>
+            <a href="{% url 'logout' %}" class="text-red-600 hover:text-red-700 transition">Logout</a>
+          </nav>
+
+          <!-- Mobile Menu Button -->
+          <button id="menu-btn" class="md:hidden text-gray-700 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden border-t">
+          <nav class="py-4 space-y-3 text-sm text-gray-700">
+            <a href="{% url 'use_model' %}" class="block text-blue-600 font-semibold">Use Model</a>
+            <a href="{% url 'about' %}" class="block hover:text-blue-600">About This Project</a>
+            <a href="{% url 'logout' %}" class="block text-red-600 hover:text-red-700">Logout</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <script>
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
       });
+    </script>
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch assessment result");
-      }
-
-      const data = await response.json();
-
-      container.innerHTML = `
-        <p><strong>Predicted Risk:</strong> ${data.predicted_risk}</p>
-        <p><strong>Confidence:</strong> ${data.risk_confidence}</p>
-      `;
-    } catch (error) {
-      console.error(error);
-      container.innerHTML = `
-        <p style="color:red;">
-          Unable to load assessment result.
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-6 py-10 space-y-10">
+      <!-- Page Header -->
+      <section class="border-b pb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Assessment Result</h1>
+        <p class="mt-2 text-lg text-gray-600">
+          Here is your digital addiction risk assessment based on your submitted responses.
         </p>
-      `;
-    }
-  }
+      </section>
 
-  fetchResult();
-</script>
+      <!-- Prediction Result -->
+      <section id="predictionSection" class="bg-white rounded-xl shadow-sm p-6 mt-6 hidden">
+        <h2 class="text-xl font-semibold mb-3">Prediction Result</h2>
+        <div id="riskContainer" class="flex items-center justify-between bg-gray-50 border rounded-lg p-4">
+          <div>
+            <p class="text-sm text-gray-500">Predicted Risk Level</p>
+            <p id="riskText" class="text-2xl font-bold">Loading...</p>
+            <p id="riskConfidence" class="text-sm mt-1">Confidence: Loading...</p>
+          </div>
+          <span id="riskBadge" class="text-sm px-3 py-1 rounded-full">Loading...</span>
+        </div>
+        <p id="riskDescription" class="mt-4 text-gray-700"></p>
+      </section>
+
+      <!-- Script to fetch assessment result -->
+      <script>
+        const assessmentId = {{ assessment.id }};
+        const predictionSection = document.getElementById("predictionSection");
+        const riskText = document.getElementById("riskText");
+        const riskBadge = document.getElementById("riskBadge");
+        const riskDescription = document.getElementById("riskDescription");
+        const riskConfidence = document.getElementById("riskConfidence");
+
+        const riskColors = {
+          "Not at Risk": { text: "text-green-600", badgeBg: "bg-green-100", badgeText: "text-green-700", description: "You are currently at low risk of digital addiction." },
+          "Mild": { text: "text-yellow-600", badgeBg: "bg-yellow-100", badgeText: "text-yellow-700", description: "You show mild signs of digital addiction. Monitor your usage." },
+          "Moderate": { text: "text-orange-600", badgeBg: "bg-orange-100", badgeText: "text-orange-700", description: "This individual shows behavioral patterns associated with moderate digital addiction risk." },
+          "Severe": { text: "text-red-600", badgeBg: "bg-red-100", badgeText: "text-red-700", description: "High risk of digital addiction. Immediate intervention recommended." }
+        };
+
+        async function fetchResult() {
+          try {
+            const response = await fetch(`/api/assessment/${assessmentId}/`, {
+              headers: { "Content-Type": "application/json" },
+            });
+            if (!response.ok) throw new Error("Failed to fetch assessment result");
+
+            const data = await response.json();
+            const risk = data.predicted_risk || "Not at Risk";
+            const confidence = data.risk_confidence || "N/A";
+            const colors = riskColors[risk] || riskColors["Not at Risk"];
+
+            // Update DOM
+            predictionSection.classList.remove("hidden");
+
+            riskText.textContent = risk;
+            riskText.className = `text-2xl font-bold ${colors.text}`;
+
+            riskBadge.textContent = risk === "Not at Risk" ? "Safe" : risk;
+            riskBadge.className = `text-sm px-3 py-1 rounded-full ${colors.badgeBg} ${colors.badgeText}`;
+
+            riskDescription.textContent = colors.description;
+
+            // Confidence with same color as risk label
+            riskConfidence.textContent = `Confidence: ${confidence}`;
+            riskConfidence.className = `text-sm mt-1 ${colors.text}`;
+
+          } catch (error) {
+            console.error(error);
+            predictionSection.classList.remove("hidden");
+
+            riskText.textContent = "Error";
+            riskText.className = "text-2xl font-bold text-red-600";
+
+            riskBadge.textContent = "Failed";
+            riskBadge.className = "text-sm px-3 py-1 rounded-full bg-red-100 text-red-700";
+
+            riskDescription.textContent = "Unable to load assessment result.";
+            riskConfidence.textContent = "";
+          }
+        }
+
+        fetchResult();
+      </script>
+    </main>
+  </body>
+</html>
