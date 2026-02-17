@@ -8,7 +8,6 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   </head>
 
   <body class="bg-gray-50 text-gray-800">
@@ -106,17 +105,16 @@
 
     <!-- Main Content -->
     <main class="max-w-6xl mx-auto px-6 py-10 space-y-10">
-
       <!-- Page Header -->
-        <section class="border-b pb-6">
-            <h1 class="text-3xl font-bold text-gray-900">
-                Digital Behaviour Insights Dashboard
-            </h1>
-            <p class="mt-2 text-lg text-gray-600">
-                Explore key trends and patterns in student digital behaviour to
-                inform interventions and support strategies.
-            </p>
-        </section>
+      <section class="border-b pb-6">
+        <h1 class="text-3xl font-bold text-gray-900">
+          Digital Behaviour Insights Dashboard
+        </h1>
+        <p class="mt-2 text-lg text-gray-600">
+          Explore key trends and patterns in student digital behaviour to inform
+          interventions and support strategies.
+        </p>
+      </section>
 
       <!-- Summary Cards -->
       <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -160,27 +158,19 @@
           </p>
         </div>
       </section>
+      <!-- Include Plotly.js once in base template or before the chart div -->
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-      <!-- Insight Section -->
-      <!-- <section class="bg-white rounded-xl shadow-sm p-6">
-        <h2 class="text-xl font-semibold mb-3">Behavioural Trends</h2>
+      <!-- Behavioural Trends Section -->
+      <section class="bg-white rounded-xl shadow-sm p-6 mt-6">
+        <h2 class="text-xl font-semibold mb-3"></h2>
         <p class="text-gray-700 mb-4">
-          Identify key patterns in screen time, night-time usage, and compulsive
-          behaviors across age groups.
+          
         </p>
 
-        <div
-          class="h-64 flex items-center justify-center border rounded-lg bg-gray-50"
-        >
-          <img
-            src="{{ age_chart_url }}"
-            alt="Average Digital Addiction Score by Age Group"
-            class="max-h-full"
-          />
-        </div>
-      </section> -->
-
-
+        <!-- Render Plotly chart -->
+        <div class="mt-4 w-full">{{ das_chart_div|safe }}</div>
+      </section>
 
       <!-- Risk Distribution -->
       <section class="bg-white rounded-xl shadow-sm p-6">
