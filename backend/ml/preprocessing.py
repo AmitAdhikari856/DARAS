@@ -1,6 +1,14 @@
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
+def normalize_time_string(s):
+    if not s or pd.isna(s):
+        return ""
+    # Replace en dash and em dash with normal dash
+    s = s.replace("–", "-").replace("—", "-").strip()
+    return s
+
+
 def preprocess_assessment(assessment, encoder=None, fit=False):
     # ✅ Map Yes/No to boolean
     own_smartphone_map = {"Yes": True, "No": False}
@@ -9,8 +17,11 @@ def preprocess_assessment(assessment, encoder=None, fit=False):
     screen_map = {"<2h": 2, "2–3h": 2.5, "3–4h": 3.5, "4–6h": 5, ">6h": 6}
     night_map = {"Never": 0, "<30m": 0.25, "30–60m": 0.75, "1–2h": 1.5, ">2h": 3}
     notif_map = {"<5 times": 4, "5–10 times": 7, "11–20 times": 15, ">20 times": 21}
-    social_map = {"<1h": 0.5, "1–2h": 1.5, "2–3h": 2.5, "3–4h": 3.5, ">4h": 5}
-    gaming_map = {"None": 0, "<30m": 0.25, "30–60m": 0.75, "1–2h": 1.5, ">2h": 3}
+    gaming_map = {"None": 0, "<30m": 0.25, "30-60m": 0.75, "1-2h": 1.5, ">2h": 3}
+    social_map = {"<1h": 0.5, "1-2h": 1.5, "2-3h": 2.5, "3-4h": 3.5, ">4h": 5}
+
+    gaming_time_str = normalize_time_string(assessment.gaming_time)
+    social_time_str = normalize_time_string(assessment.social_time)
 
     # 1️⃣ Raw features
     X_raw = {
@@ -23,8 +34,8 @@ def preprocess_assessment(assessment, encoder=None, fit=False):
         "screen_time_weekends": screen_map.get(assessment.screen_weekends, 0),
         "night_phone_use": night_map.get(assessment.night_phone_use, 0),
         "notif_per_hour": notif_map.get(assessment.notif_per_hour, 0),
-        "social_media_time": social_map.get(assessment.social_time, 0),
-        "gaming_time": gaming_map.get(assessment.gaming_time, 0),
+        "social_media_time": social_map.get(social_time_str, 0),
+        "gaming_time": gaming_map.get(gaming_time_str, 0),
         "da1_time_loss": assessment.da1,
         "da2_restless": assessment.da2,
         "da3_failed_cut": assessment.da3,

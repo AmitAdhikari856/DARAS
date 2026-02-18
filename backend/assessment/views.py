@@ -20,6 +20,7 @@ from collections import Counter
 import plotly.graph_objects as go
 from plotly.offline import plot
 from collections import Counter
+import pandas as pd
 
 
 @login_required
@@ -198,9 +199,7 @@ def create_late_night_pie_chart(assessments):
 
 
 from collections import Counter
-import plotly.graph_objects as go
-from plotly.offline import plot
-import pandas as pd
+
 
 # Numeric-to-label mapping
 night_map = {
@@ -289,6 +288,57 @@ def create_night_phone_by_age_percentage_bar_chart(assessments):
 
 
 
+from collections import Counter
+import plotly.graph_objects as go
+from plotly.offline import plot
+
+def create_platform_bar_chart(assessments):
+    """
+    Creates a bar chart showing the count of users per platform.
+    Platforms considered: YouTube, TikTok, Instagram, Facebook, WhatsApp, X, Snapchat, Gaming
+    """
+    # Full platform list in desired order
+    platform_order = ["YouTube", "TikTok", "Instagram", "Facebook",
+                      "WhatsApp", "X", "Snapchat", "Gaming"]
+
+    # Collect all platforms used
+    all_platforms = []
+    for assessment in assessments:
+        # Each assessment should have a 'platforms' attribute (list of platform names)
+        platforms = getattr(assessment, "platforms", [])
+        if platforms is None:
+            platforms = []
+        # If platforms is a Pandas series, get the first value
+        if hasattr(platforms, 'iloc'):
+            platforms = platforms.iloc[0]
+        # Extend list
+        all_platforms.extend(platforms)
+
+    # Count occurrences of each platform
+    platform_counts = Counter(all_platforms)
+    counts_ordered = [platform_counts.get(p, 0) for p in platform_order]
+
+    # Create bar chart
+    fig = go.Figure(go.Bar(
+        x=platform_order,
+        y=counts_ordered,
+        marker_color="#1f77b4",
+        text=counts_ordered,
+        textposition='auto'
+    ))
+
+    fig.update_layout(
+        title="Platform Usage Counts",
+        xaxis_title="Platform",
+        yaxis_title="Number of Users",
+        template="plotly_white"
+    )
+
+    # Convert to HTML div for Django template
+    platform_bar_div = plot(fig, output_type='div', include_plotlyjs=True)
+    return platform_bar_div
+
+
 @login_required
 def insights_view(request):
     # Fetch all assessments
@@ -304,31 +354,38 @@ def insights_view(request):
         numeric_features, _ = preprocess_assessment(assessment, fit=False)
         screen_weekdays_list.append(numeric_features.get("screen_time_weekdays", 0))
         screen_weekends_list.append(numeric_features.get("screen_time_weekends", 0))
-        gaming_time_list.append(numeric_features.get("gaming_time", 0))
-        social_media_list.append(numeric_features.get("social_media_time", 0))
+        gaming_time_list.append(numeric_features.get("gaming_time", 0))           # in hours
+        social_media_list.append(numeric_features.get("social_media_time", 0))     # in hours
 
     # Compute averages safely
     avg_screen_weekdays = round(np.mean(screen_weekdays_list), 1) if screen_weekdays_list else 0
     avg_screen_weekends = round(np.mean(screen_weekends_list), 1) if screen_weekends_list else 0
-    avg_gaming_time = round(np.mean(gaming_time_list), 0) if gaming_time_list else 0
-    avg_social_media_time = round(np.mean(social_media_list), 0) if social_media_list else 0
+    avg_gaming_time_hours = round(np.mean(gaming_time_list), 2) if gaming_time_list else 0
+    avg_social_media_time_hours = round(np.mean(social_media_list), 2) if social_media_list else 0
+
+    # Convert hours to minutes for metric cards
+    avg_gaming_time_mins = round(avg_gaming_time_hours * 60, 1)
+    avg_social_media_time_mins = round(avg_social_media_time_hours * 60, 1)
 
     context = {
         "total_assessments": total_assessments,
         "avg_screen_weekdays": avg_screen_weekdays,
         "avg_screen_weekends": avg_screen_weekends,
-        "avg_gaming_time": avg_gaming_time,
-        "avg_social_media_time": avg_social_media_time,
+        "avg_gaming_time": avg_gaming_time_mins,        # now in minutes
+        "avg_social_media_time": avg_social_media_time_mins,  # now in minutes
 
         # Interactive chart div for DAS by age
         "das_chart_div": generate_das_by_age_chart_interactive(assessments),
 
-         # Interactive pie chart for late night phone usage
+        # Interactive pie chart for late night phone usage
         "pie_div": create_late_night_pie_chart(assessments),
 
         # Interactive bar chart for late night phone usage
-        "bar_div": create_night_phone_by_age_percentage_bar_chart(assessments)
+        "bar_div": create_night_phone_by_age_percentage_bar_chart(assessments),
 
+        # Bar chart for platform usage
+        "platform_bar_div": create_platform_bar_chart(assessments),
     }
 
     return render(request, "admin/insights.html", context)
+
