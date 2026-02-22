@@ -1,136 +1,294 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <title>Student Dashboard | Digital Addiction Risk Assessment System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  </head>
 
-<body class="bg-gray-50 text-gray-800">
-
+  <body class="bg-gray-50 text-gray-800">
     <!-- Header & Navigation -->
     <header class="sticky top-0 z-50 bg-white border-b shadow-sm">
-        <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-6xl mx-auto px-6">
+        <!-- Top Row -->
+        <div class="flex items-center justify-between h-16">
+          <!-- Title -->
+          <div class="flex flex-col leading-tight">
+            <a
+              href="{% url 'student_dashboard' %}"
+              class="text-lg font-semibold text-gray-900"
+            >
+              Digital Addiction Risk Assessment System
+            </a>
+            <span class="text-xs text-gray-500">
+              Kageshwori–Manohara Municipality
+            </span>
+          </div>
 
-            <!-- Top Row -->
-            <div class="flex items-center justify-between h-16">
+          <!-- Desktop Navigation -->
+          <nav
+            class="hidden md:flex space-x-6 text-sm font-medium text-gray-700"
+          >
+            <a
+              href="{% url 'use_model' %}"
+              class="hover:text-blue-600 transition"
+              >Use Model</a
+            >
+            <a href="{% url 'about' %}" class="hover:text-blue-600 transition"
+              >About This Project</a
+            >
+            <a
+              href="{% url 'logout' %}"
+              class="text-red-600 hover:text-red-700 transition"
+              >Logout</a
+            >
+          </nav>
 
-                <!-- Title -->
-                <div class="flex flex-col leading-tight">
-                    <a href="{% url 'student_dashboard' %}" class="text-lg font-semibold text-gray-900">
-                        Digital Addiction Risk Assessment System
-                    </a>
-                    <span class="text-xs text-gray-500">
-                        Kageshwori–Manohara Municipality
-                    </span>
-                </div>
-
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
-                    <a href="{% url 'use_model' %}" class="hover:text-blue-600 transition">Use Model</a>
-                    <a href="{% url 'about' %}" class="hover:text-blue-600 transition">About This Project</a>
-                    <a href="{% url 'logout' %}" class="text-red-600 hover:text-red-700 transition">Logout</a>
-                </nav>
-
-                <!-- Mobile Menu Button -->
-                <button id="menu-btn" class="md:hidden text-gray-700 focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-
-            </div>
-
-            <!-- Mobile Navigation -->
-            <div id="mobile-menu" class="hidden md:hidden border-t">
-                <nav class="py-4 space-y-3 text-sm text-gray-700">
-                    <a href="{% url 'use_model' %}" class="block hover:text-blue-600">Use Model</a>
-                    <a href="{% url 'about' %}" class="block hover:text-blue-600">About This Project</a>
-                    <a href="{% url 'logout' %}" class="block text-red-600 hover:text-red-700">Logout</a>
-                </nav>
-            </div>
-
+          <!-- Mobile Menu Button -->
+          <button
+            id="menu-btn"
+            class="md:hidden text-gray-700 focus:outline-none"
+          >
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
         </div>
+
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden border-t">
+          <nav class="py-4 space-y-3 text-sm text-gray-700">
+            <a href="{% url 'use_model' %}" class="block hover:text-blue-600"
+              >Use Model</a
+            >
+            <a href="{% url 'about' %}" class="block hover:text-blue-600"
+              >About This Project</a
+            >
+            <a
+              href="{% url 'logout' %}"
+              class="block text-red-600 hover:text-red-700"
+              >Logout</a
+            >
+          </nav>
+        </div>
+      </div>
     </header>
 
     <!-- Mobile Menu Toggle Script -->
     <script>
-        const menuBtn = document.getElementById("menu-btn");
-        const mobileMenu = document.getElementById("mobile-menu");
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
 
-        menuBtn.addEventListener("click", () => {
-            mobileMenu.classList.toggle("hidden");
-        });
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
     </script>
 
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto px-6 py-10 space-y-10">
+      <!-- Page Header -->
+      <section class="border-b pb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Student Dashboard</h1>
+        <p class="mt-2 text-lg text-gray-600">
+          Welcome, {{ request.user.username }} 👋 Track your digital Usages
+          behaviors and risk insights.
+        </p>
+      </section>
 
-        <!-- Page Header -->
-        <section class="border-b pb-6">
-            <h1 class="text-3xl font-bold text-gray-900">
-                Student Dashboard
-            </h1>
-            <p class="mt-2 text-lg text-gray-600">
-                Welcome, {{ request.user.username }} 👋  
-                Track your digital behavior assessments and risk insights.
-            </p>
-        </section>
+      <!-- Summary Cards -->
+      <section
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8"
+      >
+        <!-- Total Assessments -->
+        <div
+          class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-500"
+        >
+          <p class="text-sm text-gray-500">Total Assessments</p>
+          <p class="text-3xl font-bold text-red-600 mt-1">
+            {{ metrics.total_assessments }}
+          </p>
+        </div>
 
-        <!-- Dashboard Card -->
-        <section class="bg-white rounded-xl shadow-sm p-6">
-            <h2 class="text-xl font-semibold mb-3">Your Digital Addiction Assessment</h2>
+        <!-- Avg Screen Time (Weekdays) -->
+        <div
+          class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-400"
+        >
+          <p class="text-sm text-gray-500">Avg Screen Time (Weekdays)</p>
+          <p class="text-3xl font-bold text-yellow-600 mt-1">
+            {{ metrics.avg_screen_weekdays | floatformat:1 }}<span
+              class="text-lg font-medium"
+            >
+              hrs</span
+            >
+          </p>
+        </div>
+
+        <!-- Avg Screen Time (Weekends) -->
+        <div
+          class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-gray-400"
+        >
+          <p class="text-sm text-gray-500">Avg Screen Time (Weekends)</p>
+          <p class="text-3xl font-bold text-gray-600 mt-1">
+            {{ metrics.avg_screen_weekends | floatformat:1 }}
+            <span class="text-lg font-medium">hrs</span>
+          </p>
+        </div>
+
+        <!-- Avg Gaming Time -->
+        <div
+          class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-400"
+        >
+          <p class="text-sm text-gray-500">Avg Gaming Time</p>
+          <p class="text-3xl font-bold text-red-600 mt-1">
+            {{ metrics.avg_gaming_time_mins }}<span class="text-lg font-medium">
+              mins</span
+            >
+          </p>
+        </div>
+
+        <!-- Avg Social Media Time -->
+        <div
+          class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-400"
+        >
+          <p class="text-sm text-gray-500">Avg Social Media Time</p>
+          <p class="text-3xl font-bold text-blue-600 mt-1">
+            {{ metrics.avg_social_media_time_mins }}
+            <span class="text-lg font-medium"> mins</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- Digital Addiction Assessment Gradient Section -->
+      <section
+        class="bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl shadow-lg p-8 md:p-12 flex flex-col md:flex-row items-center justify-between"
+      >
+        <!-- Text Content -->
+        <div class="md:w-full text-center md:text-left">
+          <h2 class="text-3xl font-bold mb-3">
+            Take the Digital Addiction Risk Assessment
+          </h2>
+          <p class="leading-relaxed mb-6">
+            Understand your digital habits and see how they affect your
+            lifestyle. Complete the assessment to get personalized insights and
+            tips.
+          </p>
+          <div
+            class="flex flex-col md:flex-row justify-center md:justify-start gap-4"
+          >
+            <a
+              href="{% url 'use_model' %}"
+              class="px-6 py-3 bg-white text-blue-600 font-semibold rounded hover:bg-gray-100 transition"
+            >
+              Take Assessment
+            </a>
+          </div>
+        </div>
+      </section>
+      <!-- Charts Section -->
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title">My Digital Addiction Trend</h5>
+          {{ addiction_trend_chart|safe }}
+        </div>
+      </div>
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      <!-- Charts Section -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title">My Social Media Usage Trend</h5>
+          {{ social_time_trend_chart|safe }}
+        </div>
+      </div>
+      <!-- Dashboard Card -->
+      <!-- <section class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-3">Take Digital Addiction Risk Assessment Survey</h2>
             <p class="leading-relaxed text-gray-700">
                 Start or review your digital addiction risk assessment using the predictive model.
             </p>
             <a href="{% url 'use_model' %}"
                class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                Use Model
+                Take Assessment
             </a>
-        </section>
+        </section> -->
 
-        <!-- Dashboard Card -->
-        <section class="bg-white rounded-xl shadow-sm p-6">
-            <h2 class="text-xl font-semibold mb-3">Assessment History</h2>
-            <p class="leading-relaxed text-gray-700">
-                No assessments recorded yet. Once you submit data, results will appear here.
-            </p>
-            <a href="{% url 'assessment-history' %}"
-               class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                View History
-            </a>
-        </section>
+      <!-- Dashboard Card -->
+      <!-- <section class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-semibold mb-3">Assessment History</h2>
+        <p class="leading-relaxed text-gray-700">
+          No assessments recorded yet. Once you submit data, results will appear
+          here.
+        </p>
+        <a
+          href="{% url 'assessment-history' %}"
+          class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          View History
+        </a>
+      </section> -->
 
-        <!-- Dashboard Card -->
-        <section class="bg-white rounded-xl shadow-sm p-6">
-            <h2 class="text-xl font-semibold mb-3">About This System</h2>
-            <p class="leading-relaxed text-gray-700">
-                Learn more about how this system helps identify early digital addiction risks among students.
-            </p>
-            <a href="{% url 'about' %}"
-               class="inline-block mt-4 text-blue-600 hover:underline">
-                Read More →
-            </a>
-        </section>
+      <!-- Assessment History Gradient Section -->
+      <section
+        class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl shadow-lg p-8 md:p-12 flex flex-col items-center text-center"
+      >
+        <!-- Text Content -->
+        <h2 class="text-3xl font-bold mb-3">Assessment History</h2>
+        <p class="leading-relaxed mb-6">
+            Review your past assessments to track changes in your digital habits
+            and risk levels over time. Click the button below to view your
+            complete history of submissions and insights.
+        </p>
 
+        <!-- Button -->
+        <a
+          href="{% url 'assessment-history' %}"
+          class="px-6 py-3 bg-white text-purple-600 font-semibold rounded hover:bg-gray-100 transition"
+        >
+          View History
+        </a>
+      </section>
+
+      <!-- Dashboard Card -->
+      <section class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-semibold mb-3">About This System</h2>
+        <p class="leading-relaxed text-gray-700">
+          Learn more about how this system helps identify early digital
+          addiction risks among students.
+        </p>
+        <a
+          href="{% url 'about' %}"
+          class="inline-block mt-4 text-blue-600 hover:underline"
+        >
+          Read More →
+        </a>
+      </section>
     </main>
 
     <!-- Footer -->
     <footer class="border-t bg-white mt-10">
-        <div class="max-w-6xl mx-auto px-6 py-6">
-            <p class="text-sm text-gray-500 text-center">
-                © <span id="year"></span> Kageshwori–Manohara Municipality — Academic & Research Use Only
-            </p>
-        </div>
+      <div class="max-w-6xl mx-auto px-6 py-6">
+        <p class="text-sm text-gray-500 text-center">
+          © <span id="year"></span> Kageshwori–Manohara Municipality — Academic
+          & Research Use Only
+        </p>
+      </div>
     </footer>
 
     <script>
-        document.getElementById("year").textContent = new Date().getFullYear();
+      document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-
-</body>
+  </body>
 </html>

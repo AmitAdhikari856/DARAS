@@ -205,17 +205,26 @@
         <div class="mt-4 w-full">{{ platform_bar_div|safe }}</div>
       </section>
 
+
+      <!-- platforms used bar graph based on gender -->
+      <section class="bg-white rounded-xl shadow-sm p-6 mt-6">
+        <h2 class="text-xl font-semibold mb-3">Platform Usage Counts by Gender</h2>
+        <p class="text-gray-700 mb-4">
+     
+        </p>
+
+        <!-- Render Plotly chart -->
+        <div class="mt-4 w-full">{{ platform_gender_chart|safe }}</div>
+      </section>
+
       <!-- Risk Distribution -->
       <section class="bg-white rounded-xl shadow-sm p-6">
         <h2 class="text-xl font-semibold mb-3">Risk Category Distribution</h2>
         <p class="text-gray-700 mb-4">
-          Distribution of students across digital addiction risk levels.
+          
         </p>
-
-        <div
-          class="h-64 flex items-center justify-center border border-dashed rounded-lg text-gray-400"
-        >
-          Risk distribution chart placeholder
+      <!-- Render Plotly chart -->
+        <div class="mt-4 w-full">{{self_rated_pie_chart_div|safe }}</div>
         </div>
       </section>
     </main>

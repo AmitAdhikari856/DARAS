@@ -1,8 +1,7 @@
-import os
 import numpy as np
+import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -13,15 +12,8 @@ from ml.preprocessing import preprocess_assessment
 
 import plotly.graph_objects as go
 from plotly.offline import plot
-import plotly.graph_objects as go
-from plotly.offline import plot
-from collections import Counter
 
-import plotly.graph_objects as go
-from plotly.offline import plot
 from collections import Counter
-import pandas as pd
-
 
 @login_required
 def assessment_result_page(request, pk):
@@ -36,8 +28,6 @@ def assessment_result_page(request, pk):
         "students/assessment_result.html",
         {"assessment": assessment}
     )
-
-
 
 def generate_das_by_age_chart_interactive(assessments):
     """
@@ -288,9 +278,6 @@ def create_night_phone_by_age_percentage_bar_chart(assessments):
 
 
 
-from collections import Counter
-import plotly.graph_objects as go
-from plotly.offline import plot
 
 def create_platform_bar_chart(assessments):
     """
@@ -337,4 +324,165 @@ def create_platform_bar_chart(assessments):
     # Convert to HTML div for Django template
     platform_bar_div = plot(fig, output_type='div', include_plotlyjs=True)
     return platform_bar_div
+
+
+
+def create_platform_bar_chart_by_gender(assessments):
+    """
+    Creates an interactive grouped bar chart showing
+    platform usage count segmented by gender.
+
+    Platforms considered:
+    YouTube, TikTok, Instagram, Facebook, WhatsApp, X, Snapchat, Gaming
+    """
+
+    # Platform order (fixed)
+    platform_order = [
+        "YouTube", "TikTok", "Instagram", "Facebook",
+        "WhatsApp", "X", "Snapchat", "Gaming"
+    ]
+
+    # Supported genders (normalize if needed)
+    gender_order = ["Male", "Female"]
+
+    # Initialize counter: gender -> platform -> count
+    gender_platform_counts = {
+        gender: Counter() for gender in gender_order
+    }
+
+    # Collect data
+    for assessment in assessments:
+        gender = getattr(assessment, "gender", None)
+        if gender not in gender_order:
+            continue
+
+        platforms = getattr(assessment, "platforms", [])
+        if platforms is None:
+            platforms = []
+
+        # Handle pandas Series case
+        if hasattr(platforms, "iloc"):
+            platforms = platforms.iloc[0]
+
+        for platform in platforms:
+            if platform in platform_order:
+                gender_platform_counts[gender][platform] += 1
+
+    # Build Plotly traces
+    traces = []
+    for gender in gender_order:
+        counts = [gender_platform_counts[gender].get(p, 0) for p in platform_order]
+
+        traces.append(
+            go.Bar(
+                x=platform_order,
+                y=counts,
+                name=gender,
+                text=counts,
+                textposition="auto"
+            )
+        )
+
+    # Create figure
+    fig = go.Figure(data=traces)
+
+    fig.update_layout(
+        title="Platform Usage by Gender",
+        xaxis_title="Platform",
+        yaxis_title="Number of Users",
+        barmode="group",
+        template="plotly_white",
+        legend_title="Gender"
+    )
+
+    # Convert to HTML div for Django template
+    platform_gender_bar_div = plot(
+        fig,
+        output_type="div",
+        include_plotlyjs=True
+    )
+
+    return platform_gender_bar_div
+
+
+
+
+def create_self_rated_digital_addiction_pie_chart(assessments):
+    """
+    Google-Forms–style pie chart for self-rated digital addiction risk.
+    Handles snake_case DB values correctly.
+    """
+
+    # 🔹 Mapping: DB value -> Display label
+    risk_label_map = {
+        "not_at_risk": "Not at risk",
+        "mild": "Mild",
+        "moderate": "Moderate",
+        "severe": "Severe",
+    }
+
+    # Fixed display order
+    risk_order = ["Not at risk", "Mild", "Moderate", "Severe"]
+
+    # Google Forms colors
+    color_map = {
+        "Not at risk": "#3366CC",
+        "Mild": "#DC3912",
+        "Moderate": "#FF9900",
+        "Severe": "#109618",
+    }
+
+    normalized_risks = []
+
+    for assessment in assessments:
+        raw_risk = getattr(assessment, "self_rated_da", None)
+
+        if raw_risk:
+            raw_risk = str(raw_risk).strip().lower()
+            if raw_risk in risk_label_map:
+                normalized_risks.append(risk_label_map[raw_risk])
+
+    risk_counts = Counter(normalized_risks)
+    counts_ordered = [risk_counts.get(risk, 0) for risk in risk_order]
+    total_responses = sum(counts_ordered)
+
+    if total_responses == 0:
+        return "<p><strong>No self-rated digital addiction data available.</strong></p>"
+
+    fig = go.Figure(
+        go.Pie(
+            labels=risk_order,
+            values=counts_ordered,
+            textinfo="percent",
+            textposition="inside",
+            marker=dict(
+                colors=[color_map[r] for r in risk_order],
+                line=dict(color="white", width=2),
+            ),
+            hovertemplate=(
+                "<b>%{label}</b><br>"
+                "%{value} responses<br>"
+                "%{percent}<extra></extra>"
+            ),
+        )
+    )
+
+    fig.update_layout(
+        title=dict(
+            text=f"Self-rated digital addiction risk<br><sup>{total_responses} responses</sup>",
+            x=0,
+            xanchor="left",
+        ),
+        legend=dict(x=1.02, y=0.5),
+        template="plotly_white",
+        margin=dict(t=80, r=120, l=40, b=40),
+    )
+
+    self_rated_pie_chart_div = plot(
+        fig,
+        output_type="div",
+        include_plotlyjs=False,
+    )
+
+    return self_rated_pie_chart_div
 
